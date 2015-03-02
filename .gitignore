@@ -1,0 +1,12 @@
+.DS_Store
+target/
+*.iml
+.classpath
+.project
+.settings/
+.idea/
+
+# python
+*.egg-info/
+build/
+dist/
