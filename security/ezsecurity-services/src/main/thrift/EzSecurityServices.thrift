@@ -14,6 +14,7 @@
 
 namespace * ezbake.security.thrift
 namespace py ezbake.security.thriftapi
+namespace go ezbake.security.thriftapi
 
 include "EzBakeBase.thrift"
 
@@ -112,6 +113,18 @@ service EzSecurity extends EzBakeBase.EzBakeBaseService {
      */
     void invalidateCache(
         1: required EzSecurityToken request) throws (1: EzBakeBase.EzSecurityTokenException ezSecurityTokenException);
+
+
+
+    /*
+     * get a user's authorizations as computed by EzSecurity. Only callable by applications with _Ez_ security ids
+     */
+    set<string> getAuthorizations(
+        1:required EzBakeBase.EzSecurityToken token,
+        2:required EzBakeBase.TokenType userType,
+        3:required string userId) throws (
+            1:EzBakeBase.EzSecurityTokenException tokenException, 2:UserNotFoundException userNotFound)
+
 }
 
 enum RegistrationStatus {

@@ -14,6 +14,7 @@
 
 namespace * ezbake.frack.core.thrift
 namespace py ezbake.frack.core.thriftapi
+namespace go ezbake.frack.core.thriftapi
 
 struct SecureMessage {
     1: required binary key;

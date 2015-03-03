@@ -14,6 +14,7 @@
 
 namespace * ezbake.services.provenance.thrift
 namespace py ezbake.services.provenance.thriftapi
+namespace go ezbake.services.provenance.thriftapi
 
 include "EzBakeBase.thrift"
 

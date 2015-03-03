@@ -14,6 +14,7 @@
 
 namespace * ezbake.ezbroadcast.core.thrift
 namespace py ezbake.ezbroadcast.core.thriftapi
+namespace go ezbake.ezbroadcast.core.thriftapi
 
 include "EzBakeBase.thrift"
 

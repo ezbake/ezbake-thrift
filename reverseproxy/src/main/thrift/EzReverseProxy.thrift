@@ -14,6 +14,7 @@
 
 namespace * ezbake.reverseproxy.thrift
 namespace py ezbake.reverseproxy.thriftapi
+namespace go ezbake.reverseproxy.thriftapi
 
 include "EzBakeBase.thrift"
 

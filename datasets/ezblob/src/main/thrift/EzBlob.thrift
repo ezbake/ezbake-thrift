@@ -14,6 +14,7 @@
 
 namespace * ezbake.data.base.blob.thrift
 namespace py ezbake.data.base.blob.thriftapi
+namespace go ezbake.data.base.blob.thriftapi
 
 include "EzBakeBase.thrift"
 include "BaseDataService.thrift"

@@ -14,6 +14,7 @@
 
 namespace * ezbake.frack.common.utils.thrift
 namespace py ezbake.frack.common.utils.thriftapi
+namespace go ezbake.frack.common.utils.thriftapi
 
 include "EzBakeBase.thrift"
 include "ProvenanceService.thrift"

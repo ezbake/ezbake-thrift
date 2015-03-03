@@ -14,6 +14,7 @@
 
 namespace * ezbake.frontend.thrift
 namespace py ezbake.frontend.thriftapi
+namespace go ezbake.frontend.thriftapi
 
 include "EzReverseProxy.thrift"
 

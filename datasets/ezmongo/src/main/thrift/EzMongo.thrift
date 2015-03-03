@@ -14,6 +14,7 @@
 
 namespace * ezbake.data.mongo.thrift
 namespace py ezbake.data.mongo.thriftapi
+namespace go ezbake.data.mongo.thriftapi
 
 include "EzBakeBase.thrift"
 include "BaseDataService.thrift"

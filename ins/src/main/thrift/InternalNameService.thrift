@@ -14,6 +14,7 @@
 
 namespace * ezbake.ins.thrift.gen
 namespace py ezbake.ins.thriftapi.gen
+namespace go ezbake.ins.thriftapi.gen
 
 include "EzBakeBase.thrift"
 include "EzSecurityServices.thrift"

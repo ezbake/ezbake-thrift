@@ -13,6 +13,7 @@
  * limitations under the License. */
 
 namespace * ezbake.discovery.stethoscope.thrift
+namespace go ezbake.discovery.stethoscope.thriftapi
 namespace py ezbake.discovery.stethoscope.thriftapi
 
 include "EzBakeBase.thrift"

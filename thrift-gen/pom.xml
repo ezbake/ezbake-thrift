@@ -8,12 +8,18 @@
         <version>2.1</version>
     </parent>
 
-    <artifactId>ezbake-security-thrift-parent</artifactId>
+    <artifactId>thrift-gen</artifactId>
     <packaging>pom</packaging>
 
-    <modules>
-        <module>ezsecurity-services</module>
-        <module>profile</module>
-        <module>permission-iterator</module>
-    </modules>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <appendAssemblyId>false</appendAssemblyId>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

@@ -16,6 +16,7 @@ include "EzBakeBase.thrift"
 
 namespace * ezbake.services.geospatial.thrift
 namespace py ezbake.services.geospatial.thriftapi
+namespace go ezbake.services.geospatial.thriftapi
 
 const string SERVICE_NAME = "GeospatialExtractorService"
 

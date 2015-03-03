@@ -14,6 +14,7 @@
 
 namespace * ezbake.intent.query.thrift
 namespace py ezbake.intent.query.thriftapi
+namespace go ezbake.intent.query.thriftapi
 
 include "EzBakeBase.thrift"
 include "QueryIntents.thrift"

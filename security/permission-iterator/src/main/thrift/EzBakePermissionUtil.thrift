@@ -14,6 +14,7 @@
 
 namespace * ezbake.security.serialize.thrift
 namespace py ezbake.security.serialize.thriftapi
+namespace go ezbake.security.serialize.thriftapi
 
 include "EzBakeBase.thrift"
 

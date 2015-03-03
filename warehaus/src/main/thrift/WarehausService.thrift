@@ -71,6 +71,10 @@ struct ViewId {
     1: required string uri;
     2: required string spacename;
     3: required string view;
+    //Pass in a specific timestamp to update a specific view
+    4: optional EzBakeBase.DateTime timestamp;
+    //Set this to true if this view should update the previous views with the same uri/spacename/view
+    5: optional bool squashPrevious;
 }
 
 /**

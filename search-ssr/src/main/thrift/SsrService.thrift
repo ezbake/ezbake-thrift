@@ -53,13 +53,12 @@ struct PercolatorHit {
     1: required string percolatorId;
     2: required string documentId;
     3: required EzBakeBase.DateTime timeOfIngest;
-    4: optional string documentTitle;
-    5: optional EzBakeBase.DateTime documentResultDate;
 }
 
 struct PercolatorHitInbox{
-    1: required list<PercolatorHit> listOfHits;
+    1: required SSRSearchResult hits;
     2: required EzBakeBase.DateTime lastFlushed;
+    3: required bool exceedLimit;
 }
 
 struct PercolatorInboxPeek{

@@ -14,6 +14,7 @@
 
 namespace * ezbake.frack.core.data.thrift
 namespace py ezbake.frack.core.data.thriftapi
+namespace go ezbake.frack.core.data.thriftapi
 
 struct StreamEvent {
     /**

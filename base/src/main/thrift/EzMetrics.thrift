@@ -14,6 +14,7 @@
 
 namespace * ezbake.base.thrift.metrics
 namespace py ezbake.base.thriftapi.metrics
+namespace go ezbake.base.thriftapi.metrics
 
 struct GaugeThrift {
     1: optional string value;

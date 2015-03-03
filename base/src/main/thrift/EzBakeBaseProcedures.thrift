@@ -14,6 +14,7 @@
 
 namespace * ezbake.base.thrift.procedures
 namespace py ezbake.base.thriftapi.procedures
+namespace go ezbake.base.thriftapi.procedures
 
 include "EzBakeBase.thrift"
 

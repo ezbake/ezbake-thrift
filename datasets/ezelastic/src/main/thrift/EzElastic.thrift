@@ -14,6 +14,7 @@
 
 namespace * ezbake.data.elastic.thrift
 namespace py ezbake.data.elastic.thriftapi
+namespace go ezbake.data.elastic.thriftapi
 
 include "EzBakeBase.thrift"
 include "BaseDataService.thrift"
@@ -143,8 +144,8 @@ enum RangeType {
 
 struct FacetRange {
     1: required RangeType rangeType;
-    2: optional string from;
-    3: optional string to;
+    2: optional string rangeFrom;
+    3: optional string rangeTo;
 }
 
 struct RangeFacet {
@@ -153,8 +154,8 @@ struct RangeFacet {
 }
 
 struct RangeFacetEntry {
-    1: string from;
-    2: string to;
+    1: string rangeFrom;
+    2: string rangeTo;
     3: double min;
     4: double max;
     5: double mean;

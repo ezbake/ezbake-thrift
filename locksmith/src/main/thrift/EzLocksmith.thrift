@@ -14,6 +14,7 @@
 
 namespace * ezbake.security.lock.smith.thrift
 namespace py ezbake.security.lock.smith.thriftapi
+namespace go ezbake.security.lock.smith.thriftapi
 
 include "EzBakeBase.thrift"
 

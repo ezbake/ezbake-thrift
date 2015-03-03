@@ -14,6 +14,7 @@
 
 namespace * ezbake.quarantine.thrift
 namespace py ezbake.quarantine.thriftapi
+namespace go ezbake.quarantine.thriftapi
 
 include "EzBakeBase.thrift"
 

@@ -76,12 +76,31 @@ struct Group {
     4: optional bool requireOnlyUser = true;
     5: optional bool requireOnlyAPP = false;
     6: optional bool isActive = true;
+    7: optional string friendlyName;
 }
 
 struct UserGroup {
     1: required Group group;
     2: required UserGroupPermissions permissions;
 }
+
+/**
+ * Struct containing parameters for a groups request. Currently there are no parameters, but it is anticipated that
+ * filtering/pagination may be a requirement at some point.
+ */
+struct GroupsRequest {}
+
+/**
+ * Struct containing information contained in the response of a groups request.
+ */
+struct GroupsRequestResponse {
+    /**
+     * Requested groups.
+     */
+    1: required set<Group> retrievedGroups;
+}
+
+
 
 enum AuthorizationError {
     GROUP_NOT_FOUND,
@@ -124,6 +143,16 @@ enum UserType {
     APP_USER
 }
 
+/**
+ * Values with which an user's groups may be requested.
+ */
+struct UserGroupsRequest {
+    /**
+     * Identifier for the user for which groups are being requested.
+     */
+    1: required string identifier
+}
+
 struct User {
     /**
      * User or app user name
@@ -157,7 +186,12 @@ service EzGroups extends EzBakeBase.EzBakeBaseService {
     /* ---------------------------------------------------------------------------------- */
 
     /**
-     * Create a new group
+     * Create a new group owned by the user identified by the principal on the given token as a child of the given
+     * parent group, and with the given name.
+     *
+     * @param token EzSecurityToken with which to create the group and from which to get the prinicipal of the owner
+     * @param parent fully qualified name of the group that will be the parent to the newly created group
+     * @param name 'friendly' name of the new group. NOT the fully qualified name
      *
      * @return the newly created group's unique ID
      */
@@ -171,9 +205,64 @@ service EzGroups extends EzBakeBase.EzBakeBaseService {
             3: EzGroupOperationException createError);
 
     /**
+     * Create a new group owned by the user identified by the principal on the given token as a child of the given
+     * parent group, and with the given name.
+     *
+     * @param token EzSecurityToken with which to create the group and from which to get the prinicipal of the owner
+     * @param parent fully qualified name of the group that will be the parent to the newly created group
+     * @param name 'friendly' name of the new group. NOT the fully qualified name
+     *
+     * @return the newly created group
+     */
+    Group createAndGetGroup(
+        1: required EzSecurityToken token,
+        2: string parent,
+        3: required string name,
+        4: required GroupInheritancePermissions parentGroupInheritance) throws (
+            1: EzBakeBase.EzSecurityTokenException tokenError,
+            2: AuthorizationException authorizationError,
+            3: EzGroupOperationException createError);
+
+    /**
+     * Create a new group owned by the user identified by the principal on the given token as a child of the given
+     * parent group, and with the given name.
+     *
+     * @param token EzSecurityToken with which to create the group and from which to get the prinicipal of the owner
+     * @param parent fully qualified name of the group that will be the parent to the newly created group
+     * @param name 'friendly' name of the new group. NOT the fully qualified name
+     * @param includeOnlyRequiresUser if the user has data access to this group, then they have access to anything
+     * marked with this group, regardless of other requestors in the request chain
+     * @param includedIfAppInChain users lacking this group will still be able to access resources marked with this
+     * group if going through an app that has data access to this group.
+     *
      * @return the newly created group's unique ID
      */
     i64 createGroupWithInclusion(
+        1: required EzSecurityToken token,
+        2: string parent,
+        3: required string name,
+        4: required GroupInheritancePermissions parentGroupInheritance,
+        5: bool includeOnlyRequiresUser=false,
+        6: bool includedIfAppInChain=true) throws (
+            1: EzBakeBase.EzSecurityTokenException tokenError,
+            2: AuthorizationException authorizationError,
+            3: EzGroupOperationException createError);
+
+    /**
+     * Create a new group owned by the user identified by the principal on the given token as a child of the given
+     * parent group, and with the given name.
+     *
+     * @param token EzSecurityToken with which to create the group and from which to get the prinicipal of the owner
+     * @param parent fully qualified name of the group that will be the parent to the newly created group
+     * @param name 'friendly' name of the new group. NOT the fully qualified name
+     * @param includeOnlyRequiresUser if the user has data access to this group, then they have access to anything
+     * marked with this group, regardless of other requestors in the request chain
+     * @param includedIfAppInChain users lacking this group will still be able to access resources marked with this
+     * group if going through an app that has data access to this group.
+     *
+     * @return the newly created group
+     */
+    Group createAndGetGroupWithInclusion(
         1: required EzSecurityToken token,
         2: string parent,
         3: required string name,
@@ -208,6 +297,14 @@ service EzGroups extends EzBakeBase.EzBakeBaseService {
             2: AuthorizationException authorizationError,
             3: EzGroupOperationException createError);
 
+    /**
+     * Change a groups' name. This affects the fully qualified name of descendents of this group. If the given token does
+     * not have the auths to change the name of every descendent group, then the operation may be rejected.
+     *
+     * @param token EzSecurityToken of the requestor of this operation
+     * @param group group to rename
+     * @param newstring new name for the group
+     */
     void changeGroupName(
         1: required EzSecurityToken token,
         2: required string group,
@@ -216,9 +313,22 @@ service EzGroups extends EzBakeBase.EzBakeBaseService {
             2: AuthorizationException authorizationError,
             3: EzGroupOperationException createError);
 
+    /**
+     * Gets EzGroups IDs/markings for the groups, users and app users specified by the given arguments. If a given
+     * group or user cannot be found, it will be ignored in the results.
+     *
+     * @param token token of requester for determining auths
+     * @param groupNames fully qualified names of groups for which to get EzGroups IDs/markings
+     * @param userIds user DN/Principals for which to get EzGroups IDs/markings
+     * @param appIds EzBake application IDs for which to get EzGroups IDs/markings
+     * @throws EzbakeBase.EzSecurityTokenException if validation of the token is not successful
+     * @throws EzGroupOperationException if requested elements cannot be found
+     */
     set<i64> getGroupsMask(
         1: required EzSecurityToken token,
-        2: required set<string> groupNames) throws (
+        2: required set<string> groupNames,
+        3: set<string> userIds,
+        4: set<string> appIds) throws (
             1: EzBakeBase.EzSecurityTokenException tokenError,
             2: EzGroupOperationException createError);
 
@@ -458,6 +568,27 @@ service EzGroups extends EzBakeBase.EzBakeBaseService {
     /* ---------------------------------------------------------------------------------- */
     /* ---------------------------------------------------------------------------------- */
 
+
+    /**
+     * Gets groups matching the parameters in the given GroupsRequest or all groups if no parameters are given.
+     *
+     * @param token EzSecurityToken used to determine the returned groups. Currently all groups can be returned to
+     *        an EzBake Admin, but an AuthorizationException will be thrown for any other requester.
+     * @param requestInfo criteria for the returned results
+     *
+     * @return the requested groups
+     * @throws EzBakeBase.EzSecurityTokenException if EzGroups is unable to validate the token
+     * @throws AuthorizationException may be thrown if authorization is denied to the user for this operation
+     * @throws GroupQueryException may be thrown if there is problem executing the query
+     */
+    GroupsRequestResponse getGroups(
+        1: required EzSecurityToken token,
+        2: required GroupsRequest requestInfo) throws (
+              1: EzBakeBase.EzSecurityTokenException tokenError,
+              2: AuthorizationException authorizationError,
+              3: GroupQueryException queryError);
+
+
     /**
      * Get all child groups from the given parent group. This will only return children that inherit an admin_read
      * edge from the parent vertex.
@@ -490,6 +621,25 @@ service EzGroups extends EzBakeBase.EzBakeBaseService {
         1: required EzSecurityToken token,
         2: required string groupName) throws (
             1: EzBakeBase.EzSecurityTokenException tokenError);
+
+    /**
+      * Get group names that correspond to the given EzGroups indices. A group name may not be returned
+      * for every given index. This could be because either the user/app does not have any type of access to the group
+      * or no group corresponding to the given index can be found. In the case that a group is not found, the map value
+      * corresponding to that index will be populated with a 'not found' tag.
+      *
+      * @param token EzSecurityToken belonging to the party performing the query
+      * @param groupIndices the EzGroups indices for the groups for which names are being requested
+      *
+      * @return a map of the accessible indices to the corresponding group names
+      * @throws EzBakeBase.EzSecurityTokenException if EzGroups is unable to validate the token
+      * @throws GroupQueryException if the requesting user or app cannot be found in EzGroups
+      */
+     map<i64,string> getGroupNamesByIndices(
+         1: required EzSecurityToken token,
+         2: required set<i64> groupIndices) throws (
+             1: EzBakeBase.EzSecurityTokenException tokenError,
+             2: GroupQueryException createError);
 
     /**
      * Get all members belonging to a group, including Users and App Users
@@ -550,7 +700,19 @@ service EzGroups extends EzBakeBase.EzBakeBaseService {
             3: GroupQueryException createError);
 
     /**
-     * Return the set of groups (group name + group id) the user has access to, along with the users
+     * Returns all groups an user will have data access to when making a request with the given token. The app the
+     * token was issued to is taken into consideration when determining the returned groups.
+     *
+     * @param token security token used to determine the groups to which an user has data access when making requests
+     *        through the app this token was issued to.
+     * @param explicitOnly currently not implemented, this flag would restrict the return values to only those groups
+     *        to which the user has direct data access
+     *
+     * @return a set of UserGroups containing information, including ID and name, of the groups to which an user has
+     *         data access
+     * @throws EzBakeBase.EzSecurityTokenException if EzGroups is unable to validate the token
+     * @throws AuthorizationException may be thrown if authorization is denied to the user for this operation
+     * @throws GroupQueryException may be thrown if there is problem executing the query
      */
     set<UserGroup> getUserGroups(
         1: required EzSecurityToken token,
@@ -558,6 +720,26 @@ service EzGroups extends EzBakeBase.EzBakeBaseService {
             1: EzBakeBase.EzSecurityTokenException tokenError,
             2: AuthorizationException authorizationError,
             3: GroupQueryException createError)
+
+   /**
+    * Request groups to which an user has data access.  Requester must be an EzBake Admin and all groups to which an
+    * user has data access will be returned.
+    *
+    * @param token EzSecurityToken user to determine if requester is authorized to perform this action
+    * @param request information needed to carry aout the request for the users groups
+    *
+    * @return a set of UserGroups containing information, including ID and name, of the groups to which an user has
+    *         data access
+    * @throws EzBakeBase.EzSecurityTokenException thrown if EzGroups is unable to validate the token
+    * @throws AuthorizationException thrown if the requester is not an EzBake Admin or authorization is denied
+    * @throws GroupQueryException may be thrown if there is problem executing the query
+    */
+    set<UserGroup> requestUserGroups(
+        1: required EzSecurityToken token,
+        2: required UserGroupsRequest request) throws (
+            1: EzBakeBase.EzSecurityTokenException tokenError,
+            2: AuthorizationException authorizationError,
+            3: GroupQueryException queryError);
 
     set<string> getUserDiagnosticApps(
         1: required EzSecurityToken token) throws (

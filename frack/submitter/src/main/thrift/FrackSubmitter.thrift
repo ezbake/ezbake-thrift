@@ -14,6 +14,7 @@
 
 namespace * ezbake.frack.submitter.thrift
 namespace py ezbake.frack.submitter.thriftapi
+namespace go ezbake.frack.submitter.thriftapi
 
 include "EzBakeBase.thrift"
 

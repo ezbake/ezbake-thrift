@@ -16,6 +16,7 @@ include "EzBakeBase.thrift"
 
 namespace * ezbake.services.deploy.thrift
 namespace py ezbake.services.deploy.thriftapi
+namespace go ezbake.services.deploy.thriftapi
 
 const string SERVICE_NAME = "ezdeployer"
 
